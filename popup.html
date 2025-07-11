@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body {
+      width: 350px;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-radius: 10px;
+    }
+    
+    .container {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 20px;
+      border-radius: 10px;
+      backdrop-filter: blur(10px);
+    }
+    
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 18px;
+    }
+    
+    .field {
+      margin-bottom: 15px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    
+    input, textarea {
+      width: 100%;
+      padding: 8px;
+      border: none;
+      border-radius: 5px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+    
+    textarea {
+      height: 60px;
+      resize: vertical;
+    }
+    
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #ff6b6b;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    
+    button:hover {
+      background: #ff5252;
+    }
+    
+    button:disabled {
+      background: #ccc !important;
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+    
+    .status {
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 5px;
+      text-align: center;
+      font-weight: bold;
+    }
+    
+    .status.success {
+      background: rgba(76, 175, 80, 0.3);
+    }
+    
+    .status.error {
+      background: rgba(244, 67, 54, 0.3);
+    }
+    
+    .status.warning {
+      background: rgba(255, 152, 0, 0.3);
+    }
+    
+    .warning-text {
+      font-size: 12px;
+      color: #ffeb3b;
+      margin-top: 10px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎬 YouTube Auto Commenter</h1>
+    
+    <div class="field">
+      <label for="keyword">Parola chiave di ricerca:</label>
+      <input type="text" id="keyword" placeholder="Es: tutorial javascript">
+    </div>
+    
+    <div class="field">
+      <label for="comment">Commento predefinito:</label>
+      <textarea id="comment" placeholder="Scrivi qui il tuo commento..."></textarea>
+    </div>
+    
+    <div class="field">
+      <label for="delay">Tempo tra commenti (secondi):</label>
+      <input type="number" id="delay" min="30" max="300" value="60">
+    </div>
+    
+    <div class="field">
+      <label for="maxVideos">Numero massimo di video:</label>
+      <input type="number" id="maxVideos" min="1" max="20" value="5">
+    </div>
+    
+    <div class="field">
+      <button id="testBtn" style="background: #4CAF50; margin-bottom: 10px;">🔗 Testa Connessione</button>
+    </div>
+    
+    <button id="startBtn">🚀 Inizia Automazione</button>
+    <button id="stopBtn" style="display: none; background: #f44336;">⏹️ Ferma Automazione</button>
+    
+    <div id="connectionStatus" style="margin-top: 5px; padding: 5px; text-align: center; font-size: 12px; border-radius: 3px;">
+      <span id="connectionIndicator">🔄 Controllo connessione...</span>
+    </div>
+    
+    <div id="status"></div>
+    
+    <div class="warning-text">
+      ⚠️ ATTENZIONE: Questo strumento potrebbe violare i termini di servizio di YouTube. Usa responsabilmente!
+    </div>
+  </div>
+  
+  <script src="popup.js"></script>
+</body>
+</html> 
