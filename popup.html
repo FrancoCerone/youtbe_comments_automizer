@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <style>
     body {
-      width: 350px;
+      width: 400px;
       padding: 20px;
       font-family: Arial, sans-serif;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -47,6 +47,45 @@
     textarea {
       height: 60px;
       resize: vertical;
+    }
+    
+    .comment-mode {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    
+    .comment-mode button {
+      flex: 1;
+      padding: 8px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: all 0.3s;
+    }
+    
+    .comment-mode button.active {
+      background: #4CAF50;
+      color: white;
+    }
+    
+    .comment-mode button:not(.active) {
+      background: rgba(255, 255, 255, 0.3);
+      color: white;
+    }
+    
+    .json-textarea {
+      height: 120px;
+      font-family: monospace;
+      font-size: 12px;
+    }
+    
+    .json-example {
+      font-size: 11px;
+      color: #ffeb3b;
+      margin-top: 5px;
+      line-height: 1.3;
     }
     
     button {
@@ -110,8 +149,25 @@
     </div>
     
     <div class="field">
+      <label>Modalità commenti:</label>
+      <div class="comment-mode">
+        <button type="button" id="singleCommentBtn" class="active">Singolo</button>
+        <button type="button" id="jsonCommentBtn">Lista JSON</button>
+      </div>
+    </div>
+    
+    <div class="field" id="singleCommentField">
       <label for="comment">Commento predefinito:</label>
       <textarea id="comment" placeholder="Scrivi qui il tuo commento..."></textarea>
+    </div>
+    
+    <div class="field" id="jsonCommentField" style="display: none;">
+      <label for="commentsList">Lista commenti JSON:</label>
+      <textarea id="commentsList" class="json-textarea" placeholder='["Great video!", "Thanks for sharing!", "Very helpful!"]'></textarea>
+      <div class="json-example">
+        💡 Formato: ["Commento 1", "Commento 2", "Commento 3"]<br>
+        🎲 Verrà scelto un commento random per ogni video
+      </div>
     </div>
     
     <div class="field">

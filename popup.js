@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
   const keywordInput = document.getElementById('keyword');
   const commentInput = document.getElementById('comment');
+  const commentsListInput = document.getElementById('commentsList');
   const delayInput = document.getElementById('delay');
   const maxVideosInput = document.getElementById('maxVideos');
   const startBtn = document.getElementById('startBtn');
@@ -9,15 +10,78 @@ document.addEventListener('DOMContentLoaded', function() {
   const statusDiv = document.getElementById('status');
   const connectionIndicator = document.getElementById('connectionIndicator');
   const connectionStatus = document.getElementById('connectionStatus');
+  
+  // Elementi per la modalità commenti
+  const singleCommentBtn = document.getElementById('singleCommentBtn');
+  const jsonCommentBtn = document.getElementById('jsonCommentBtn');
+  const singleCommentField = document.getElementById('singleCommentField');
+  const jsonCommentField = document.getElementById('jsonCommentField');
 
   let isRunning = false;
+  let commentMode = 'single'; // 'single' o 'json'
 
   // Carica i valori salvati
-  chrome.storage.sync.get(['keyword', 'comment', 'delay', 'maxVideos'], function(data) {
+  chrome.storage.sync.get(['keyword', 'comment', 'commentsList', 'commentMode', 'delay', 'maxVideos'], function(data) {
     if (data.keyword) keywordInput.value = data.keyword;
     if (data.comment) commentInput.value = data.comment;
+    if (data.commentsList) commentsListInput.value = data.commentsList;
+    if (data.commentMode) {
+      commentMode = data.commentMode;
+      updateCommentMode();
+    }
     if (data.delay) delayInput.value = data.delay;
     if (data.maxVideos) maxVideosInput.value = data.maxVideos;
+  });
+
+  // Gestione modalità commenti
+  singleCommentBtn.addEventListener('click', function() {
+    commentMode = 'single';
+    updateCommentMode();
+    saveSettings();
+  });
+
+  jsonCommentBtn.addEventListener('click', function() {
+    commentMode = 'json';
+    updateCommentMode();
+    saveSettings();
+  });
+
+  function updateCommentMode() {
+    if (commentMode === 'single') {
+      singleCommentBtn.classList.add('active');
+      jsonCommentBtn.classList.remove('active');
+      singleCommentField.style.display = 'block';
+      jsonCommentField.style.display = 'none';
+    } else {
+      singleCommentBtn.classList.remove('active');
+      jsonCommentBtn.classList.add('active');
+      singleCommentField.style.display = 'none';
+      jsonCommentField.style.display = 'block';
+    }
+  }
+
+  // Validazione JSON in tempo reale
+  commentsListInput.addEventListener('input', function() {
+    const value = commentsListInput.value.trim();
+    if (value) {
+      try {
+        const parsed = JSON.parse(value);
+        if (Array.isArray(parsed) && parsed.length > 0 && parsed.every(item => typeof item === 'string')) {
+          commentsListInput.style.borderColor = '#4CAF50';
+          commentsListInput.style.backgroundColor = 'rgba(76, 175, 80, 0.1)';
+        } else {
+          commentsListInput.style.borderColor = '#f44336';
+          commentsListInput.style.backgroundColor = 'rgba(244, 67, 54, 0.1)';
+        }
+      } catch (e) {
+        commentsListInput.style.borderColor = '#f44336';
+        commentsListInput.style.backgroundColor = 'rgba(244, 67, 54, 0.1)';
+      }
+    } else {
+      commentsListInput.style.borderColor = '';
+      commentsListInput.style.backgroundColor = '';
+    }
+    saveSettings();
   });
 
   // Salva i valori quando cambiano
@@ -25,6 +89,8 @@ document.addEventListener('DOMContentLoaded', function() {
     chrome.storage.sync.set({
       keyword: keywordInput.value,
       comment: commentInput.value,
+      commentsList: commentsListInput.value,
+      commentMode: commentMode,
       delay: delayInput.value,
       maxVideos: maxVideosInput.value
     });
@@ -45,9 +111,44 @@ document.addEventListener('DOMContentLoaded', function() {
   // Testa la connessione al caricamento
   testConnection();
 
+  // Funzione per validare i commenti
+  function validateComments() {
+    if (commentMode === 'single') {
+      const comment = commentInput.value.trim();
+      if (!comment) {
+        return { valid: false, message: 'Inserisci un commento!' };
+      }
+      return { valid: true, comments: [comment] };
+    } else {
+      const value = commentsListInput.value.trim();
+      if (!value) {
+        return { valid: false, message: 'Inserisci la lista di commenti JSON!' };
+      }
+      
+      try {
+        const parsed = JSON.parse(value);
+        if (!Array.isArray(parsed)) {
+          return { valid: false, message: 'La lista deve essere un array JSON!' };
+        }
+        if (parsed.length === 0) {
+          return { valid: false, message: 'La lista non può essere vuota!' };
+        }
+        if (!parsed.every(item => typeof item === 'string')) {
+          return { valid: false, message: 'Tutti gli elementi devono essere stringhe!' };
+        }
+        if (parsed.some(item => item.trim().length === 0)) {
+          return { valid: false, message: 'I commenti non possono essere vuoti!' };
+        }
+        
+        return { valid: true, comments: parsed };
+      } catch (e) {
+        return { valid: false, message: 'JSON non valido! Formato: ["Commento 1", "Commento 2"]' };
+      }
+    }
+  }
+
   startBtn.addEventListener('click', function() {
     const keyword = keywordInput.value.trim();
-    const comment = commentInput.value.trim();
     const delay = parseInt(delayInput.value);
     const maxVideos = parseInt(maxVideosInput.value);
 
@@ -56,8 +157,10 @@ document.addEventListener('DOMContentLoaded', function() {
       return;
     }
 
-    if (!comment) {
-      showStatus('Inserisci un commento!', 'error');
+    // Valida i commenti
+    const commentsValidation = validateComments();
+    if (!commentsValidation.valid) {
+      showStatus(commentsValidation.message, 'error');
       return;
     }
 
@@ -121,7 +224,8 @@ document.addEventListener('DOMContentLoaded', function() {
         chrome.tabs.sendMessage(tabs[0].id, {
           action: 'startAutomation',
           keyword: keyword,
-          comment: comment,
+          comments: commentsValidation.comments, // Passa l'array di commenti
+          commentMode: commentMode,
           delay: delay * 1000, // converti in millisecondi
           maxVideos: maxVideos
         }, function(response) {
@@ -132,7 +236,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
           if (response && response.success) {
             showRunningState();
-            showStatus('Automazione avviata!', 'success');
+            const modeText = commentMode === 'single' ? 'commento singolo' : `${commentsValidation.comments.length} commenti randomici`;
+            showStatus(`Automazione avviata con ${modeText}!`, 'success');
           } else {
             showStatus('Errore nell\'avviare l\'automazione', 'error');
           }
