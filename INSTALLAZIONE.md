@@ -1,68 +1,68 @@
-# 🚀 Installazione Rapida - YouTube Auto Commenter
+# 🚀 Quick Installation - YouTube Auto Commenter
 
-## Passo 1: Scarica i file
-Assicurati di avere tutti questi file nella stessa cartella:
-- `manifest.json`
-- `popup.html`
-- `popup.js`
-- `content.js`
-- `background.js`
-- `icon16.png`
-- `icon48.png`
-- `icon128.png`
+## Step 1: Download the files  
+Make sure you have all of these files in the same folder:  
+- `manifest.json`  
+- `popup.html`  
+- `popup.js`  
+- `content.js`  
+- `background.js`  
+- `icon16.png`  
+- `icon48.png`  
+- `icon128.png`  
 
-## Passo 2: Apri Chrome Extensions
-1. Apri Chrome
-2. Vai su `chrome://extensions/`
-3. Attiva "Modalità sviluppatore" (Developer mode) in alto a destra
+## Step 2: Open Chrome Extensions  
+1. Open Chrome  
+2. Go to `chrome://extensions/`  
+3. Enable "Developer mode" in the top right corner  
 
-## Passo 3: Carica l'estensione
-1. Clicca "Carica estensione non pacchettizzata" (Load unpacked)
-2. Seleziona la cartella contenente tutti i file
-3. Clicca "Seleziona cartella"
+## Step 3: Load the extension  
+1. Click "Load unpacked"  
+2. Select the folder containing all the files  
+3. Click "Select folder"  
 
-## Passo 4: Verifica l'installazione
-Dovresti vedere l'icona dell'estensione nella barra degli strumenti di Chrome.
+## Step 4: Verify installation  
+You should see the extension icon in Chrome’s toolbar.  
 
-## Passo 5: Primo uso
-1. Vai su https://www.youtube.com
-2. Clicca sull'icona dell'estensione
-3. **Testa la connessione**:
-   - Clicca "🔗 Testa Connessione"
-   - Aspetta che appaia "✅ Connesso"
-   - Se vedi "❌ Disconnesso", ricarica YouTube
-4. Configura le impostazioni:
-   - Inserisci una parola chiave (es: "tutorial")
-   - Scrivi il tuo commento
-   - Imposta il tempo di attesa (minimo 30 secondi)
-   - Scegli il numero massimo di video
-5. Clicca "Inizia Automazione"
+## Step 5: First use  
+1. Go to https://www.youtube.com  
+2. Click the extension icon  
+3. **Test the connection**:  
+   - Click "🔗 Test Connection"  
+   - Wait for "✅ Connected" to appear  
+   - If you see "❌ Disconnected", reload YouTube  
+4. Configure the settings:  
+   - Enter a keyword (e.g. "tutorial")  
+   - Write your comment  
+   - Set the wait time (minimum 30 seconds)  
+   - Choose the maximum number of videos  
+5. Click "Start Automation"  
 
-## ⚠️ IMPORTANTE
-- Usa responsabilmente
-- Rispetta i termini di servizio di YouTube
-- Inizia con pochi video per testare
-- Usa tempi di attesa lunghi per evitare problemi
+## ⚠️ IMPORTANT  
+- Use responsibly  
+- Respect YouTube’s terms of service  
+- Start with a few videos to test  
+- Use longer wait times to avoid issues  
 
-## 🆘 Problemi?
+## 🆘 Having issues?
 
-### Se l'estensione non appare:
-1. Controlla che tutti i file siano nella stessa cartella
-2. Verifica che la "Modalità sviluppatore" sia attiva
-3. Prova a ricaricare l'estensione (pulsante refresh)
+### If the extension doesn't appear:  
+1. Check that all files are in the same folder  
+2. Make sure "Developer mode" is enabled  
+3. Try refreshing the extension (refresh button)
 
-### Se vedi "Errore: ricarica la pagina di YouTube":
-1. **Ricarica YouTube** (F5)
-2. **Usa "🔗 Testa Connessione"**
-3. **Aspetta "✅ Connesso"** prima di iniziare
-4. **Se non funziona**: Ricarica l'estensione in chrome://extensions/
+### If you see "Error: reload the YouTube page":  
+1. **Reload YouTube** (F5)  
+2. **Use "🔗 Test Connection"**  
+3. **Wait for "✅ Connected"** before starting  
+4. **If it still doesn’t work**: Reload the extension in chrome://extensions/  
 
-### Se l'indicatore mostra "❌ Disconnesso":
-1. Ricarica la pagina di YouTube
-2. Aspetta che sia completamente caricata
-3. Clicca "🔗 Testa Connessione"
-4. Verifica di essere loggato su YouTube
+### If the indicator shows "❌ Disconnected":  
+1. Reload the YouTube page  
+2. Wait until it's fully loaded  
+3. Click "🔗 Test Connection"  
+4. Make sure you're logged into YouTube  
 
 ---
 
-**Pronta all'uso in 5 minuti!** 🎉 
+**Ready to use in 5 minutes!** 🎉
