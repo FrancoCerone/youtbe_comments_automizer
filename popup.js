@@ -265,6 +265,9 @@ document.addEventListener('DOMContentLoaded', function() {
     stopBtn.style.display = 'block';
     keywordInput.disabled = true;
     commentInput.disabled = true;
+    commentsListInput.disabled = true;
+    singleCommentBtn.disabled = true;
+    jsonCommentBtn.disabled = true;
     delayInput.disabled = true;
     maxVideosInput.disabled = true;
     
@@ -277,6 +280,9 @@ document.addEventListener('DOMContentLoaded', function() {
     stopBtn.style.display = 'none';
     keywordInput.disabled = false;
     commentInput.disabled = false;
+    commentsListInput.disabled = false;
+    singleCommentBtn.disabled = false;
+    jsonCommentBtn.disabled = false;
     delayInput.disabled = false;
     maxVideosInput.disabled = false;
     

@@ -80,7 +80,20 @@ function simulateClick(element) {
 
 // Funzione per simulare digitazione più naturale
 function simulateTyping(element, text) {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
+    // Validazione dei parametri
+    if (!element) {
+      console.error('❌ Elemento non valido per la digitazione');
+      reject(new Error('Elemento non valido'));
+      return;
+    }
+    
+    if (!text || typeof text !== 'string') {
+      console.error('❌ Testo non valido per la digitazione:', text);
+      reject(new Error('Testo non valido'));
+      return;
+    }
+    
     console.log(`⌨️ Inizio simulazione digitazione: "${text}"`);
     console.log(`📝 Elemento target: ${element.tagName} - ID: ${element.id} - Classe: ${element.className}`);
     
@@ -278,7 +291,6 @@ async function openVideoAndComment(videoUrl, comment) {
     const automationState = {
       isProcessingVideo: true,
       currentVideoUrl: videoUrl,
-      currentComment: comment,
       currentVideoIndex: currentVideoIndex,
       videoLinks: videoLinks,
       automationSettings: automationSettings,
@@ -788,7 +800,7 @@ async function runAutomation() {
     const firstVideoUrl = videoLinks[currentVideoIndex];
     console.log(`📍 Primo video: ${firstVideoUrl}`);
     
-    await openVideoAndComment(firstVideoUrl, automationSettings.comment);
+    await openVideoAndComment(firstVideoUrl, getRandomComment());
     
   } catch (error) {
     console.error('❌ Errore nell\'automazione:', error);
@@ -826,6 +838,21 @@ function stopAutomation() {
   sendStatusUpdate('Automazione fermata!', 'warning');
 }
 
+// Funzione per scegliere un commento randomico
+function getRandomComment() {
+  if (!automationSettings.comments || automationSettings.comments.length === 0) {
+    console.error('❌ Nessun commento disponibile');
+    return 'Great video!'; // fallback
+  }
+  
+  const randomIndex = Math.floor(Math.random() * automationSettings.comments.length);
+  const selectedComment = automationSettings.comments[randomIndex];
+  
+  console.log(`🎲 Scelto commento randomico ${randomIndex + 1}/${automationSettings.comments.length}: "${selectedComment}"`);
+  
+  return selectedComment;
+}
+
 // Listener per i messaggi dal popup
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === 'ping') {
@@ -840,10 +867,23 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     
     automationSettings = {
       keyword: request.keyword,
-      comment: request.comment,
+      comments: request.comments || [request.comment], // Supporta sia singolo che array
+      commentMode: request.commentMode || 'single',
       delay: request.delay,
       maxVideos: request.maxVideos
     };
+    
+    // Log della configurazione
+    console.log('🚀 Configurazione automazione:');
+    console.log(`📝 Modalità commenti: ${automationSettings.commentMode}`);
+    console.log(`💬 Commenti disponibili: ${automationSettings.comments.length}`);
+    console.log(`🔍 Keyword: ${automationSettings.keyword}`);
+    console.log(`⏱️ Delay: ${automationSettings.delay}ms`);
+    console.log(`🎯 Max video: ${automationSettings.maxVideos}`);
+    
+    if (automationSettings.commentMode === 'json') {
+      console.log('🎲 Commenti:', automationSettings.comments);
+    }
     
     isAutomationRunning = true;
     currentVideoIndex = 0;
@@ -1019,7 +1059,6 @@ async function resumeAutomationAfterPageLoad() {
     
     console.log('🔄 Riprendendo automazione...');
     console.log(`📍 Video corrente: ${automationState.currentVideoUrl}`);
-    console.log(`💬 Commento: "${automationState.currentComment}"`);
     
     // Ripristina le variabili globali
     currentVideoIndex = automationState.currentVideoIndex;
@@ -1027,6 +1066,9 @@ async function resumeAutomationAfterPageLoad() {
     automationSettings = automationState.automationSettings;
     isAutomationRunning = true;
     
+    // Scegli un commento randomico
+    const randomComment = getRandomComment();
+    console.log(`💬 Commento scelto randomicamente: "${randomComment}"`);
 
     console.log('✅ Siamo sul video giusto, procedo con il commento');
     
@@ -1034,7 +1076,7 @@ async function resumeAutomationAfterPageLoad() {
     sendStatusUpdate(`Commentando video ${currentVideoIndex + 1}/${videoLinks.length} (ripreso dopo reload)...`, 'success');
     
     // Commenta il video corrente
-    const success = await addCommentToCurrentVideo(automationState.currentComment);
+    const success = await addCommentToCurrentVideo(randomComment);
     
     if (success) {
       console.log('✅ Commento aggiunto con successo');
@@ -1093,7 +1135,7 @@ async function continueAutomationWithNextVideo() {
       const nextVideoUrl = videoLinks[currentVideoIndex];
       console.log(`🎬 Prossimo video: ${nextVideoUrl}`);
       
-      await openVideoAndComment(nextVideoUrl, automationSettings.comment);
+      await openVideoAndComment(nextVideoUrl, getRandomComment());
     }
     
   } catch (error) {

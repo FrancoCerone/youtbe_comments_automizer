@@ -7,11 +7,13 @@ chrome.runtime.onInstalled.addListener(() => {
   chrome.storage.local.set({isRunning: false});
   
   // Imposta valori predefiniti se non esistono
-  chrome.storage.sync.get(['keyword', 'comment', 'delay', 'maxVideos'], (data) => {
+  chrome.storage.sync.get(['keyword', 'comment', 'commentsList', 'commentMode', 'delay', 'maxVideos'], (data) => {
     if (!data.keyword) {
       chrome.storage.sync.set({
         keyword: '',
         comment: `Love this video!`,
+        commentsList: `["Great video! 👍", "Thanks for sharing this!", "Very informative!", "Love this content!", "Keep up the great work!"]`,
+        commentMode: 'single',
         delay: 60,
         maxVideos: 5
       });
